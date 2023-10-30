@@ -2,9 +2,6 @@ package controllers
 
 import "net/http"
 
-func Index(w http.ResponseWriter, r *http.Request) {
-
-}
 func GetTasks(w http.ResponseWriter, r *http.Request) {
 
 }

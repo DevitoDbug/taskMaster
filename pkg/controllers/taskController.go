@@ -55,11 +55,15 @@ func Complete(w http.ResponseWriter, r *http.Request) {
       </button>
       <button
         class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+			hx-trigger="click"
+			hx-delete="/tasks/%v/Delete"
+			hx-target="#divId%v"
+			hx-swap="outerHTML"
       >
         Delete
       </button>
     </div>
-  </div>`, ID, tasks[ID].Completed, tasks[ID].Name, tasks[ID].Completed, ID, ID, tasks[ID].Completed)))
+  </div>`, ID, tasks[ID].Completed, tasks[ID].Name, tasks[ID].Completed, ID, ID, tasks[ID].Completed, ID, ID)))
 
 	err = temp.Execute(w, nil)
 	if err != nil {
@@ -101,16 +105,36 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
       </button>
       <button
         class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+			hx-trigger="click"
+			hx-delete="/tasks/%v/Delete"
+			hx-target="#divId%v"
+			hx-swap="outerHTML"
       >
         Delete
       </button>
     </div>
-  </div>`, taskID, tasks[taskID].Completed, tasks[taskID].Name, tasks[taskID].Completed, taskID, taskID, tasks[taskID].Completed)))
+  </div>`, taskID, tasks[taskID].Completed, tasks[taskID].Name, tasks[taskID].Completed, taskID, taskID, tasks[taskID].Completed, taskID, taskID)))
 	temp.Execute(w, nil)
 }
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 }
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
+	ID, err := utility.GetTaskID(r)
+	if err != nil {
+		log.Print(ID)
+		return
+	}
 
+	if ID < 0 || ID >= len(tasks) {
+		log.Printf("Invalid task ID: %d \n slice %v", ID, tasks)
+		return
+	}
+
+	for index, task := range tasks {
+		if task.ID == ID {
+			tasks = append(tasks[:index], tasks[index+1:]...)
+			return
+		}
+	}
 }

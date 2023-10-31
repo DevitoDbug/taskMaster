@@ -45,6 +45,10 @@
             </button>
             <button
               class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+              hx-trigger="click"
+              hx-delete="/tasks/{{.ID}}"
+              hx-target="#divId{{.ID}}"
+              hx-swap="outerHTML"
             >
               Delete
             </button>

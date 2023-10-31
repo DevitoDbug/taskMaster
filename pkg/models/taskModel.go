@@ -1,14 +1,14 @@
 package models
 
 type Task struct {
-	Id        int
+	ID        int
 	Name      string
 	Completed bool
 }
 
 func CreateTask(id int, name string) *Task {
 	createdTask := Task{
-		Id:        id,
+		ID:        id,
 		Name:      name,
 		Completed: false,
 	}

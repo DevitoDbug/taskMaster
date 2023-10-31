@@ -11,12 +11,25 @@
     <title>Task Master</title>
   </head>
   <body>
-    <div class="flex">
-      <div class="w-1/2 bg-blue-500">Tasks</div>
-      <div class="w-1/2 bg-red-400">
-        <form action="/tasks" method="POST">
-          <input type="text" name="title" />
-          <button type="submit">Add Task</button>
+    <div class="flex p-2">
+      <div class="flex flex-col w-1/2 bg-blue-500 rounded gap-1">
+        {{range .}}
+        <div class="flex flex-row justify-between">
+          {{.Name}} {{.Completed}}
+        </div>
+        {{end}}
+      </div>
+      <div class="w-1/2 flex justify-center items-center">
+        <form action="/tasks" method="POST" class="flex flex-col gap-2">
+          <input
+            type="text"
+            name="title"
+            placeholder=" Enter text... "
+            class="border rounded-l outline-none px-2 py-1 w-60"
+          />
+          <button type="submit" class="bg-red-400 w-20 h-7 text-sm rounded-lg">
+            Add Task
+          </button>
         </form>
       </div>
     </div>

@@ -11,11 +11,30 @@
     <title>Task Master</title>
   </head>
   <body>
-    <div class="flex p-2">
-      <div class="flex flex-col w-1/2 bg-blue-500 rounded gap-1">
+    <div class="flex p-2 h-full">
+      <div class="flex flex-col w-1/2 bg-purple-200 rounded gap-1 p-2">
         {{range .}}
-        <div class="flex flex-row justify-between">
-          {{.Name}} {{.Completed}}
+        <div
+          class="h-full flex flex-row justify-between border-b-2 border-gray-300 p-2"
+        >
+          {{.Name}}
+          <div class="h-full flex gap-1 self-end text-gray-50">
+            <button
+              {{if
+              .Completed}}
+              class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+              {{else}}
+              class="bg-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+              {{end}}
+            >
+              Complete
+            </button>
+            <button
+              class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+            >
+              Delete
+            </button>
+          </div>
         </div>
         {{end}}
       </div>
@@ -27,7 +46,10 @@
             placeholder=" Enter text... "
             class="border rounded-l outline-none px-2 py-1 w-60"
           />
-          <button type="submit" class="bg-red-400 w-20 h-7 text-sm rounded-lg">
+          <button
+            type="submit"
+            class="bg-purple-500 w-20 h-7 text-sm rounded-lg"
+          >
             Add Task
           </button>
         </form>

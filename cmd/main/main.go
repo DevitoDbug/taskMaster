@@ -17,7 +17,7 @@ func main() {
 		tmp := template.Must(template.ParseFiles("../../static/index.html"))
 		tasks := []models.Task{
 			{Id: 1, Name: "Task1", Completed: false},
-			{Id: 2, Name: "Task2", Completed: false},
+			{Id: 2, Name: "Task2", Completed: true},
 			{Id: 3, Name: "Task3", Completed: false},
 		}
 		tmp.Execute(w, tasks)

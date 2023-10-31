@@ -15,6 +15,7 @@
       <div class="flex flex-col w-1/2 bg-purple-200 rounded gap-1 p-2">
         {{range .}}
         <div
+          id="{{.ID}}"
           class="h-full flex flex-row justify-between border-b-2 border-gray-300 p-2"
         >
           {{.Name}}
@@ -26,6 +27,8 @@
               {{else}}
               class="bg-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
               {{end}}
+              hx-post="/tasks/{{.ID}}/complete"
+              hx-target="#{{.ID}}"
             >
               Complete
             </button>

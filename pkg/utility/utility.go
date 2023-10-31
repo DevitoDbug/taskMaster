@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func getTaskID(r *http.Request) (ID int, err error) {
+func GetTaskID(r *http.Request) (ID int, err error) {
 	param := mux.Vars(r)
 	id, errVal := strconv.ParseInt(param["id"], 0, 0)
 	if errVal != nil {

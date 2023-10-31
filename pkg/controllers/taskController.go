@@ -1,22 +1,24 @@
 package controllers
 
 import (
+	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 	"taskMaster/pkg/models"
 	"taskMaster/pkg/utility"
 )
 
-var tasks []models.Task
+var tasks = []models.Task{
+	{ID: 0, Name: "Task1", Completed: false},
+	{ID: 1, Name: "Task2", Completed: true},
+	{ID: 2, Name: "Task3", Completed: false},
+}
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	tmp := template.Must(template.ParseFiles("../../static/index.html"))
-	tasks = []models.Task{
-		{ID: 1, Name: "Task1", Completed: false},
-		{ID: 2, Name: "Task2", Completed: true},
-		{ID: 3, Name: "Task3", Completed: false},
-	}
+
 	tmp.Execute(w, tasks)
 }
 func Complete(w http.ResponseWriter, r *http.Request) {
@@ -34,9 +36,12 @@ func Complete(w http.ResponseWriter, r *http.Request) {
 
 	//toggle completed
 	tasks[ID].Completed = !tasks[ID].Completed
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Task with ID " + strconv.Itoa(ID) + " has been completed"))
+	temp := template.Must(template.New("div" + strconv.Itoa(ID)).Parse(fmt.Sprintf(" <div id=\"divId%v\"\n class=\"h-full flex flex-row justify-between border-b-2 border-gray-300 p-2\"><span>%v</span><div class=\"h-full flex gap-1 self-end text-gray-50\"><button {{if %v}} class=\"bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end\"{{else}} class=\"bg-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end\"{{end}}hx-trigger=\"click\"hx-get=\"/tasks/%v/complete\"hx-target=\"#divId%v\" hx-swap=\"outerHTML\">Complete</button><button class=\"bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end\">Delete</button></div></div>", ID, tasks[ID].Name, tasks[ID].Completed, ID, ID)))
+	err = temp.Execute(w, nil)
+	if err != nil {
+		log.Print(err)
+		return
+	}
 }
 
 func GetTasks(w http.ResponseWriter, r *http.Request) {

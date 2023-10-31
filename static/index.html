@@ -7,6 +7,12 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.6"
+      integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+      crossorigin="anonymous"
+    ></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Task Master</title>
   </head>
@@ -15,10 +21,10 @@
       <div class="flex flex-col w-1/2 bg-purple-200 rounded gap-1 p-2">
         {{range .}}
         <div
-          id="{{.ID}}"
+          id="divId{{.ID}}"
           class="h-full flex flex-row justify-between border-b-2 border-gray-300 p-2"
         >
-          {{.Name}}
+          <span>{{.Name}}</span>
           <div class="h-full flex gap-1 self-end text-gray-50">
             <button
               {{if
@@ -27,8 +33,10 @@
               {{else}}
               class="bg-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
               {{end}}
-              hx-post="/tasks/{{.ID}}/complete"
-              hx-target="#{{.ID}}"
+              hx-trigger="click"
+              hx-get="/tasks/{{.ID}}/complete"
+              hx-target="#divId{{.ID}}"
+              hx-swap="outerHTML"
             >
               Complete
             </button>

@@ -18,7 +18,10 @@
   </head>
   <body>
     <div class="flex p-2 h-full">
-      <div class="flex flex-col w-1/2 bg-purple-200 rounded gap-1 p-2">
+      <div
+        id="taskContainer"
+        class="flex flex-col w-1/2 bg-purple-200 rounded gap-1 p-2"
+      >
         {{range .}}
         <div
           id="divId{{.ID}}"
@@ -38,12 +41,7 @@
               hx-target="#divId{{.ID}}"
               hx-swap="outerHTML"
             >
-              {{if .Completed}}
-              Complete
-              {{else}}
-              Pending
-              {{end}}
-
+              {{if .Completed}} Complete {{else}} Pending {{end}}
             </button>
             <button
               class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
@@ -58,12 +56,16 @@
         <form action="/tasks" method="POST" class="flex flex-col gap-2">
           <input
             type="text"
-            name="title"
+            name="taskName"
             placeholder=" Enter text... "
             class="border rounded-l outline-none px-2 py-1 w-60"
           />
           <button
             type="submit"
+            hx-include="[name='taskName']"
+            hx-post="/tasks/"
+            hx-target="#taskContainer"
+            hx-swap="beforeend"
             class="bg-purple-500 w-20 h-7 text-sm rounded-lg"
           >
             Add Task

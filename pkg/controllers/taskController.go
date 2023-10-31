@@ -10,11 +10,7 @@ import (
 	"taskMaster/pkg/utility"
 )
 
-var tasks = []models.Task{
-	{ID: 0, Name: "Task1", Completed: false},
-	{ID: 1, Name: "Task2", Completed: true},
-	{ID: 2, Name: "Task3", Completed: false},
-}
+var tasks []models.Task
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	tmp := template.Must(template.ParseFiles("../../static/index.html"))
@@ -72,11 +68,45 @@ func Complete(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetTasks(w http.ResponseWriter, r *http.Request) {
-
-}
 func CreateTask(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		log.Print(err)
+		return
+	}
+	taskID := len(tasks)
+	taskName := r.FormValue("taskName")
+	task := models.CreateTask(taskID, taskName)
+	tasks = append(tasks, *task)
 
+	temp := template.Must(template.New("div" + strconv.Itoa(taskID)).Parse(fmt.Sprintf(`
+  <div id="divId%v" class="h-full flex flex-row justify-between border-b-2 border-gray-300 p-2">
+    <span {{if %v}} class="text-gray-500" {{end}}>%v</span>
+    <div class="h-full flex gap-1 self-end text-gray-50">
+      <button
+        {{if %v}}
+        class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+        {{else}}
+        class="bg-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+        {{end}}
+		hx-trigger="click"
+        hx-get="/tasks/%v/complete"
+        hx-target="#divId%v"
+        hx-swap="outerHTML"
+      >
+        {{if %v}}
+        Complete
+        {{else}}
+        Pending
+        {{end}}
+      </button>
+      <button
+        class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+      >
+        Delete
+      </button>
+    </div>
+  </div>`, taskID, tasks[taskID].Completed, tasks[taskID].Name, tasks[taskID].Completed, taskID, taskID, tasks[taskID].Completed)))
+	temp.Execute(w, nil)
 }
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 

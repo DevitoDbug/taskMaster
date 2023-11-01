@@ -18,20 +18,21 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	tmp.Execute(w, tasks)
 }
 func Complete(w http.ResponseWriter, r *http.Request) {
+	var idIndex int
 	ID, err := utility.GetTaskID(r)
 	if err != nil {
 		http.Error(w, "Failed to retrieve task ID", http.StatusBadRequest)
 		return
 	}
 
-	// Check if the task ID is valid
-	if ID < 0 || ID >= len(tasks) {
-		http.Error(w, "Invalid task ID", http.StatusBadRequest)
-		return
-	}
-
 	//toggle completed
-	tasks[ID].Completed = !tasks[ID].Completed
+	for index, task := range tasks {
+		if task.ID == ID {
+			tasks[index].Completed = !task.Completed
+			idIndex = index
+			break
+		}
+	}
 	temp := template.Must(template.New("div" + strconv.Itoa(ID)).Parse(fmt.Sprintf(`
   <div id="divId%v" class="h-full flex flex-row justify-between border-b-2 border-gray-300 p-2">
     <span {{if %v}} class="text-gray-500" {{end}}>%v</span>
@@ -63,7 +64,7 @@ func Complete(w http.ResponseWriter, r *http.Request) {
         Delete
       </button>
     </div>
-  </div>`, ID, tasks[ID].Completed, tasks[ID].Name, tasks[ID].Completed, ID, ID, tasks[ID].Completed, ID, ID)))
+  </div>`, ID, tasks[idIndex].Completed, tasks[idIndex].Name, tasks[idIndex].Completed, ID, ID, tasks[idIndex].Completed, ID, ID)))
 
 	err = temp.Execute(w, nil)
 	if err != nil {
@@ -116,21 +117,17 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
   </div>`, taskID, tasks[taskID].Completed, tasks[taskID].Name, tasks[taskID].Completed, taskID, taskID, tasks[taskID].Completed, taskID, taskID)))
 	temp.Execute(w, nil)
 }
+
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 }
+
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	ID, err := utility.GetTaskID(r)
 	if err != nil {
 		log.Print(ID)
 		return
 	}
-
-	if ID < 0 || ID >= len(tasks) {
-		log.Printf("Invalid task ID: %d \n slice %v", ID, tasks)
-		return
-	}
-
 	for index, task := range tasks {
 		if task.ID == ID {
 			tasks = append(tasks[:index], tasks[index+1:]...)

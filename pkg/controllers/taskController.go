@@ -11,12 +11,48 @@ import (
 )
 
 var tasks []models.Task
+var html string = `
+  <div id="divId%v" class="h-full flex flex-row justify-between border-b-2 border-gray-300 p-2">
+    <span {{if %v}} class="text-gray-500" {{end}}>%v</span>
+    <div class="h-full flex gap-1 self-end text-gray-50">
+      <button
+        {{if %v}}
+        class="bg-purple-400 text-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+        {{else}}
+        class="bg-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+        {{end}}
+		hx-trigger="click"
+        hx-get="/tasks/%v/complete"
+        hx-target="#divId%v"
+        hx-swap="outerHTML"
+      >
+        {{if %v}}Complete{{else}}Pending{{end}}
+      </button>
+      <button
+	  		{{if %v}}
+            class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
+            {{else}}
+            class="bg-purple-400 w-16 px-1 h-6 text-gray-500 text-xs rounded-lg self-end"
+            {{end}}
+			hx-trigger="click"
+			hx-delete="/tasks/%v/Delete"
+			hx-target="#divId%v"
+			hx-swap="outerHTML"
+      >
+        Delete
+      </button>
+    </div>
+  </div>`
+
+
+
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	tmp := template.Must(template.ParseFiles("../../static/index.html"))
 
 	tmp.Execute(w, tasks)
 }
+
 func Complete(w http.ResponseWriter, r *http.Request) {
 	var idIndex int
 	ID, err := utility.GetTaskID(r)
@@ -33,38 +69,7 @@ func Complete(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	temp := template.Must(template.New("div" + strconv.Itoa(ID)).Parse(fmt.Sprintf(`
-  <div id="divId%v" class="h-full flex flex-row justify-between border-b-2 border-gray-300 p-2">
-    <span {{if %v}} class="text-gray-500" {{end}}>%v</span>
-    <div class="h-full flex gap-1 self-end text-gray-50">
-      <button
-        {{if %v}}
-        class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
-        {{else}}
-        class="bg-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
-        {{end}}
-		hx-trigger="click"
-        hx-get="/tasks/%v/complete"
-        hx-target="#divId%v"
-        hx-swap="outerHTML"
-      >
-        {{if %v}}
-        Complete
-        {{else}}
-        Pending
-        {{end}}
-      </button>
-      <button
-        class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
-			hx-trigger="click"
-			hx-delete="/tasks/%v/Delete"
-			hx-target="#divId%v"
-			hx-swap="outerHTML"
-      >
-        Delete
-      </button>
-    </div>
-  </div>`, ID, tasks[idIndex].Completed, tasks[idIndex].Name, tasks[idIndex].Completed, ID, ID, tasks[idIndex].Completed, ID, ID)))
+	temp := template.Must(template.New("div" + strconv.Itoa(ID)).Parse(fmt.Sprintf(html, ID, tasks[idIndex].Completed, tasks[idIndex].Name, tasks[idIndex].Completed, ID, ID, tasks[idIndex].Completed, tasks[idIndex].Completed, ID, ID)))
 
 	err = temp.Execute(w, nil)
 	if err != nil {
@@ -83,43 +88,8 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	task := models.CreateTask(taskID, taskName)
 	tasks = append(tasks, *task)
 
-	temp := template.Must(template.New("div" + strconv.Itoa(taskID)).Parse(fmt.Sprintf(`
-  <div id="divId%v" class="h-full flex flex-row justify-between border-b-2 border-gray-300 p-2">
-    <span {{if %v}} class="text-gray-500" {{end}}>%v</span>
-    <div class="h-full flex gap-1 self-end text-gray-50">
-      <button
-        {{if %v}}
-        class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
-        {{else}}
-        class="bg-gray-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
-        {{end}}
-		hx-trigger="click"
-        hx-get="/tasks/%v/complete"
-        hx-target="#divId%v"
-        hx-swap="outerHTML"
-      >
-        {{if %v}}
-        Complete
-        {{else}}
-        Pending
-        {{end}}
-      </button>
-      <button
-        class="bg-purple-500 w-16 px-1 h-6 text-xs rounded-lg self-end"
-			hx-trigger="click"
-			hx-delete="/tasks/%v/Delete"
-			hx-target="#divId%v"
-			hx-swap="outerHTML"
-      >
-        Delete
-      </button>
-    </div>
-  </div>`, taskID, tasks[taskID].Completed, tasks[taskID].Name, tasks[taskID].Completed, taskID, taskID, tasks[taskID].Completed, taskID, taskID)))
+	temp := template.Must(template.New("div" + strconv.Itoa(taskID)).Parse(fmt.Sprintf(html, taskID, tasks[taskID].Completed, tasks[taskID].Name, tasks[taskID].Completed, taskID, taskID, tasks[taskID].Completed, tasks[taskID].Completed ,taskID, taskID)))
 	temp.Execute(w, nil)
-}
-
-func UpdateTask(w http.ResponseWriter, r *http.Request) {
-
 }
 
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
@@ -134,4 +104,8 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func UpdateTask(w http.ResponseWriter, r *http.Request) {
+
 }

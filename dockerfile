@@ -9,9 +9,11 @@ RUN go mod download
 
 COPY  cmd/ ./cmd/ 
 COPY pkg/ ./pkg/
+COPY static/ ./static/
+
 
 RUN go build -o bin ./cmd/main/main.go
 
-EXPOSE 8080
+EXPOSE 8000
 
 CMD [ "./bin" ]

@@ -48,7 +48,7 @@ var html string = `
 
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	tmp := template.Must(template.ParseFiles("../../static/index.html"))
+	tmp := template.Must(template.ParseFiles("static/index.html"))
 
 	tmp.Execute(w, tasks)
 }

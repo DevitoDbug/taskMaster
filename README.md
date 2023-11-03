@@ -1,6 +1,6 @@
 # Task Manager using Go and htmx
 
-![Screenshot](screenshot.png)
+![Screenshot](https://github.com/DevitoDbug/taskMaster/blob/master/screenshots/screenshot1.png?raw=true)
 
 This is a simple Task Manager web application built with Go and htmx, demonstrating the principle of minimal JavaScript in frontend development. It allows you to create, mark tasks as either pending or completed, and delete them.
 
